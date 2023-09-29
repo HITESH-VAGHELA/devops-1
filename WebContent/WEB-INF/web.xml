@@ -1,0 +1,33 @@
+<web-app>  
+  <welcome-file-list>  
+   <welcome-file>index.html</welcome-file>  
+  </welcome-file-list>  
+<!-- 
+<servlet>  
+<servlet-name>AddBabyName</servlet-name>  
+<servlet-class>com.babycare.servlets.AddBabyByName</servlet-class>  
+</servlet>    
+<servlet-mapping>  
+<servlet-name>AddBabyName</servlet-name>  
+<url-pattern>/AddBabyName</url-pattern>  
+</servlet-mapping>  
+
+<servlet>  
+<servlet-name>Init</servlet-name>  
+<servlet-class>com.babycare.servlets.Admin</servlet-class>  
+</servlet>    
+<servlet-mapping>  
+<servlet-name>Init</servlet-name>  
+<url-pattern>/</url-pattern>  
+</servlet-mapping>  
+
+<servlet>  
+<servlet-name>Admin</servlet-name>  
+<servlet-class>com.babycare.servlets.Admin</servlet-class>  
+</servlet>    
+<servlet-mapping>  
+<servlet-name>Admin</servlet-name>  
+<url-pattern>/Admin</url-pattern>  
+</servlet-mapping>   -->
+  
+</web-app>  

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<project name="bms" default="run">  
+    <property name="dist" value = "dist" />
+    <property name="build" value = "build" />
+    <target name="clean">
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
+    </target>
+    <target name="init" depends="clean">
+        <mkdir dir="${build}/classes" />
+        <mkdir dir="${dist}/BabyCare" />
+        <mkdir dir="${dist}/BabyCare/WEB-INF/classes" />
+    </target>
+
+    <target name="compile" depends="init">
+        <javac includeantruntime="false" srcdir="./src" destdir = "${build}/classes">
+            <classpath>
+                <fileset dir="lib">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+    <target name="copy-web-content" depends="init">
+        <copy todir="${dist}/BabyCare"><fileset dir="./WebContent/"/></copy>
+    </target>
+    <target name="copy-classes" depends="init">
+        <copy todir="${dist}/BabyCare/WEB-INF/classes"><fileset dir="./${build}/classes/"/></copy>
+    </target>
+
+    <target name="copy-lib" depends="init">
+        <copy todir="${dist}/BabyCare/WEB-INF/lib"><fileset dir="./lib/"/></copy>
+    </target>
+
+    <target name="build" depends="compile, copy-web-content, copy-classes, copy-lib">
+        <war destfile = "babycare.war" basedir= "${dist}/BabyCare" needxmlfile = "false" >
+            <zipgroupfileset dir="lib" includes="${dist}/BabyCare/WEB-INF/lib/mysql-connector-java-8.0.30.jar" />
+        </war>
+        <!-- <jar destfile="${dist}/${ant.project.name}.jar" basedir="${build}/classes">
+            <zipgroupfileset dir="lib" includes="sqlitejdbc-v056.jar" />
+            <zipgroupfileset dir="lib" includes="JTattoo-1.6.11.jar" />
+            <zipfileset  excludes="META-INF/**/*" src="lib/jcalendar.jar" />
+            <zipfileset  excludes="META-INF/**/*" src="lib/rs2xml.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="com.bank.Authentication"/>
+            </manifest>
+        </jar> -->
+    </target>
+    <target name="run" depends="build">
+        <java jar="${dist}/${ant.project.name}.jar" fork="true"/>                    
+    </target>
+
+</project>
