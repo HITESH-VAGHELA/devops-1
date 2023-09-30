@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: babycare-deployment
+  namespace: devops-proj-1
+  labels:
+    app: babycare
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: babycare
+  template:
+    metadata:
+      labels:
+        app: babycare
+    spec:
+      imagePullSecrets:
+      - name: private-registry-secret
+      containers:
+      - name: babycare
+        image: nexus.zymrinc.com:8083/devops-proj1/babycare:RELEASE_TAG
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: babycare-configmap
+              key: database_url
+        
+        - name: DATABASE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: babycare-secret
+              key: database_port
+
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: babycare-secret
+              key: mysql_user
+
+        - name: MYSQL_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: babycare-secret
+              key: mysql_password
+
+        - name: DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: babycare-secret
+              key: database
+
+        
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: babycare-service
+  namespace: devops-proj-1
+spec:
+  selector:
+    app: babycare
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001
+

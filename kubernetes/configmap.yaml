@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: babycare-configmap
+  namespace: devops-proj-1
+data:
+  database_url: backend-service

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: backend-deployment
+  namespace: devops-proj-1
+  labels:
+    app: mysql
+spec:
+  serviceName: "backend-service"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql       
+    spec:
+      imagePullSecrets:
+      - name: private-registry-secret
+      containers:
+      - name: standalonedb
+        image: nexus.zymrinc.com:8083/devops-proj1/babycare-backend:RELEASE_TAG
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+          name: standalonedb
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: babycare-secret
+              key: mysql_root_password
+        - name: MYSQL_USER
+          valueFrom: 
+            secretKeyRef:
+              name: babycare-secret
+              key: mysql_user
+
+        - name: MYSQL_DATABASE          
+          valueFrom: 
+            secretKeyRef:
+              name: babycare-secret
+              key: database
+
+        - name: MYSQL_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: babycare-secret
+              key: mysql_password
+
+        volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+  
+  volumeClaimTemplates:
+  - metadata:
+        name: mysql-persistent-storage
+        namespace: devops-proj-1
+        labels:
+           app: mysql
+    spec:
+        accessModes: 
+        - ReadWriteMany
+        storageClassName: "manual"
+        resources:
+          requests:
+              storage: 1Gi
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: devops-proj-1
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  clusterIP: None
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
